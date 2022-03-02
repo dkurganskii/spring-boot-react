@@ -1,5 +1,6 @@
 package com.hoaxify.hoaxify;
 
+import com.hoaxify.hoaxify.shared.GenericResponse;
 import com.hoaxify.hoaxify.user.User;
 import com.hoaxify.hoaxify.user.UserRepository;
 import org.junit.Before;
@@ -38,9 +39,22 @@ public class UserControllerTest {
     @Test
     public void postUser_whenUserIsValid_receiveOk() {
         User user = createValidUser();
-
         ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_USERS, user, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void postUser_whenUser_isValid_userSavedToDataBase() {
+        User user = createValidUser();
+        testRestTemplate.postForEntity(API_1_0_USERS, user, Object.class);
+        assertThat(userRepository.count()).isEqualTo(1);
+    }
+
+    @Test
+    public void postUser_whenUserIsValid_receiveSuccessMessage() {
+        User user = createValidUser();
+        ResponseEntity<GenericResponse> response = testRestTemplate.postForEntity(API_1_0_USERS, user, GenericResponse.class);
+        assertThat(response.getBody().getMessage()).isNotNull();
     }
 
     private User createValidUser() {
@@ -49,12 +63,5 @@ public class UserControllerTest {
         user.setDisplayName("display-name");
         user.setPassword("P4ssword");
         return user;
-    }
-
-    @Test
-    public void postUser_whenUser_isValid_userSavedToDataBase() {
-        User user = createValidUser();
-        testRestTemplate.postForEntity(API_1_0_USERS, user, Object.class);
-        assertThat(userRepository.count()).isEqualTo(1);
     }
 }
