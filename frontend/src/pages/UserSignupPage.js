@@ -39,26 +39,43 @@ export class UserSignupPage extends React.Component {
 
     render() {
         return (
-            <div>
-                <h1>Sign Up</h1>
-                <div><input
+            <div className='container'>
+                <h1 className='text-center'>Sign Up</h1>
+                <div 
+                    className='col-12 mb-3'>
+                    <label>Display Name</label>
+                    <input
+                    className='form-control'
                     placeholder="Your display name"
                     value={this.state.displayName}
-                    onChange={this.onChangeDisplayName}
-                /></div>
-                <div><input placeholder="Your username"
+                    onChange={this.onChangeDisplayName}/></div>
+                <div 
+                    className='col-12 mb-3'>
+                    <label>User Name</label>
+                    <input
+                    className='form-control'
+                    placeholder="Your username"
                     value={this.state.username}
-                    onChange={this.onChangeUsername}
-                /></div>
-                <div><input type="password" placeholder="Your password"
+                    onChange={this.onChangeUsername}/></div>
+                <div 
+                    className='col-12 mb-3'>
+                    <label>Password</label>
+                    <input
+                    className='form-control'
+                    type="password" placeholder="Your password"
                     value={this.state.password}
-                    onChange={this.onChangePassword}
-                /></div>
-                <div><input type="password" placeholder="Repeat your password"
+                    onChange={this.onChangePassword}/></div>
+                <div 
+                    className='col-12 mb-3'>
+                    <label>Password Repeat</label>
+                    <input
+                    className='form-control'
+                    type="password" placeholder="Repeat your password"
                     value={this.state.passwordRepeat}
-                    onChange={this.onChangePasswordRepeat}
-                /></div>
-                <div><button onClick={this.onClickSignUp}>Sign Up</button></div>
+                    onChange={this.onChangePasswordRepeat}/></div>
+                <div 
+                    className='text-center'>
+                    <button className='btn btn-primary' onClick={this.onClickSignUp}>Sign Up</button></div>
             </div>
         )
     }
