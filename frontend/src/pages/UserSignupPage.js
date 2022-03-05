@@ -34,7 +34,7 @@ export class UserSignupPage extends React.Component {
             displayName: this.state.displayName,
             password: this.state.password
         }
-        this.props.actions.postSignUp(user)
+        this.props.actions.postSignup(user)
     }
 
     render() {
@@ -83,7 +83,7 @@ export class UserSignupPage extends React.Component {
 
 UserSignupPage.defaultProps = {
     actions: {
-        postSignUp: () => new Promise((resolve, reject) => {
+        postSignup: () => new Promise((resolve, reject) => {
             resolve({})
         })
     }

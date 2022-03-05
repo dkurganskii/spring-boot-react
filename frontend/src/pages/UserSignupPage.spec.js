@@ -113,13 +113,13 @@ const setupForSubmit = (props)=>{
       expect(passwordRepeat).toHaveValue('P4ssword')
     })
 
-    it('calls postSignUp when the fields are valid and the actions are provided in props', () => {
+    it('calls postSignup when the fields are valid and the actions are provided in props', () => {
       const actions = {
-        postSignUp: jest.fn().mockResolvedValueOnce({})
+        postSignup: jest.fn().mockResolvedValueOnce({})
       }
       setupForSubmit({actions})
       fireEvent.click(button)
-      expect(actions.postSignUp).toHaveBeenCalledTimes(1)
+      expect(actions.postSignup).toHaveBeenCalledTimes(1)
     })
 
     it('does not throw exception when clicking the button when actions not provided in props', () => {
@@ -129,7 +129,7 @@ const setupForSubmit = (props)=>{
 
     it('calls post with user body when the fields are valid', () => {
       const actions = {
-        postSignUp: jest.fn().mockResolvedValueOnce({})
+        postSignup: jest.fn().mockResolvedValueOnce({})
       }
       setupForSubmit({actions})
       fireEvent.click(button)
@@ -138,7 +138,7 @@ const setupForSubmit = (props)=>{
         displayName: 'my-display-name',
         password: 'P4ssword'
       }
-      expect(actions.postSignUp).toHaveBeenCalledWith(expectedUserObject)
+      expect(actions.postSignup).toHaveBeenCalledWith(expectedUserObject)
     })
   })
 })
