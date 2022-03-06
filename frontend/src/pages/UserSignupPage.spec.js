@@ -1,4 +1,4 @@
-import { render, fireEvent } from "@testing-library/react"
+import { render, fireEvent, waitForElementToBeRemoved } from "@testing-library/react"
 import '@testing-library/jest-dom/extend-expect'
 import UserSignupPage from './UserSignupPage'
 import { jssPreset } from "@material-ui/styles"
@@ -63,27 +63,37 @@ describe('UserSignupPage', () => {
       }
     }
 
-let button, displayNameInput,usernameInput, passwordInput, passwordRepeat
+    const mockAsyncDelayed = () => {
+      return jest.fn().mockImplementation(() => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve({})
+          }, 300)
+        })
+      })
+    }
 
-const setupForSubmit = (props)=>{
+    let button, displayNameInput, usernameInput, passwordInput, passwordRepeat
 
-  const rendered = render(<UserSignupPage {...props} />)
+    const setupForSubmit = (props) => {
 
-  const {container, queryByPlaceholderText} = rendered
-  
-   displayNameInput = queryByPlaceholderText('Your display name')
-   usernameInput = queryByPlaceholderText('Your username')
-   passwordInput = queryByPlaceholderText('Your password')
-   passwordRepeat = queryByPlaceholderText('Repeat your password')
+      const rendered = render(<UserSignupPage {...props} />)
 
-  fireEvent.change(displayNameInput, changeEvent('my-display-name'))
-  fireEvent.change(usernameInput, changeEvent('my-user-name'))
-  fireEvent.change(passwordInput, changeEvent('P4ssword'))
-  fireEvent.change(passwordRepeat, changeEvent('P4ssword'))
+      const { container, queryByPlaceholderText } = rendered
 
-   button = container.querySelector('button')
-  return rendered
-}
+      displayNameInput = queryByPlaceholderText('Your display name')
+      usernameInput = queryByPlaceholderText('Your username')
+      passwordInput = queryByPlaceholderText('Your password')
+      passwordRepeat = queryByPlaceholderText('Repeat your password')
+
+      fireEvent.change(displayNameInput, changeEvent('my-display-name'))
+      fireEvent.change(usernameInput, changeEvent('my-user-name'))
+      fireEvent.change(passwordInput, changeEvent('P4ssword'))
+      fireEvent.change(passwordRepeat, changeEvent('P4ssword'))
+
+      button = container.querySelector('button')
+      return rendered
+    }
 
     it('sets the displayName value into state', () => {
       const { queryByPlaceholderText } = render(<UserSignupPage />)
@@ -117,21 +127,21 @@ const setupForSubmit = (props)=>{
       const actions = {
         postSignup: jest.fn().mockResolvedValueOnce({})
       }
-      setupForSubmit({actions})
+      setupForSubmit({ actions })
       fireEvent.click(button)
       expect(actions.postSignup).toHaveBeenCalledTimes(1)
     })
 
     it('does not throw exception when clicking the button when actions not provided in props', () => {
-    setupForSubmit()
-    expect(() => fireEvent.click(button)).not.toThrow()
+      setupForSubmit()
+      expect(() => fireEvent.click(button)).not.toThrow()
     })
 
     it('calls post with user body when the fields are valid', () => {
       const actions = {
         postSignup: jest.fn().mockResolvedValueOnce({})
       }
-      setupForSubmit({actions})
+      setupForSubmit({ actions })
       fireEvent.click(button)
       const expectedUserObject = {
         username: 'my-user-name',
@@ -140,5 +150,63 @@ const setupForSubmit = (props)=>{
       }
       expect(actions.postSignup).toHaveBeenCalledWith(expectedUserObject)
     })
+
+    it('does not allow user to click Sign Up button when there is an ongoing api call', () => {
+      const actions = {
+        postSignup: mockAsyncDelayed()
+      }
+      setupForSubmit({ actions })
+      fireEvent.click(button)
+      fireEvent.click(button)
+      expect(actions.postSignup).toHaveBeenCalledTimes(1)
+    })
+
+    it('displayes spinner when there is an ongoing api call', () => {
+      const actions = {
+        postSignup: mockAsyncDelayed()
+      }
+      const { queryByText } = setupForSubmit({ actions })
+      fireEvent.click(button)
+
+      const spinner = queryByText('Loading...')
+      expect(spinner).toBeInTheDocument()
+    })
+
+    it('hides spinner afer api call finishes successfully', async () => {
+      const actions = {
+        postSignup: mockAsyncDelayed()
+      }
+      const { queryByText } = setupForSubmit({ actions })
+      fireEvent.click(button)
+
+      await waitForElementToBeRemoved(() => queryByText('Loading...'))
+
+      const spinner = queryByText('Loading...')
+      expect(spinner).not.toBeInTheDocument()
+    })
+
+    it('hides spinner afer api call finishes with error', async () => {
+      const actions = {
+        postSignup: jest.fn().mockImplementation(() => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            reject({
+              response: { data: {} }
+            })
+          }, 300)
+        })
+      })
+    }
+      const { queryByText } = setupForSubmit({ actions })
+      fireEvent.click(button)
+
+      await waitForElementToBeRemoved(() => queryByText('Loading...'))
+
+      const spinner = queryByText('Loading...')
+      expect(spinner).not.toBeInTheDocument()
+    })
+    
   })
 })
+
+console.error = () => { }
