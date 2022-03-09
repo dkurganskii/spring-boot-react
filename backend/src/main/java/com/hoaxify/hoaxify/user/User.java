@@ -18,6 +18,7 @@ public class User {
 
     @NotNull(message = "{hoaxify.constraints.userName.NotNull.message}")
     @Size(min = 4, max = 255)
+    @UniqueUsername
     private String userName;
 
     @NotNull
