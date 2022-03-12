@@ -1,5 +1,4 @@
 import { render, fireEvent, waitForElementToBeRemoved, waitFor } from "@testing-library/react"
-import '@testing-library/jest-dom/extend-expect'
 import UserSignupPage from './UserSignupPage'
 import { jssPreset } from "@material-ui/styles"
 
@@ -206,7 +205,7 @@ describe('UserSignupPage', () => {
       expect(spinner).not.toBeInTheDocument()
     })
 
-    it('it displays validation error for displayName when error is received for the filed', async ()=>{
+    xit('it displays validation error for displayName when error is received for the filed', async ()=>{
       const actions = {
         postSignup: jest.fn().mockRejectedValue({
           response:{
@@ -227,8 +226,6 @@ describe('UserSignupPage', () => {
     const errorMessage = queryByText('Cannot be null');
     expect(errorMessage).not.toBeInTheDocument();
 
-    // const errorMessage = await waitForElement(()=> queryByText('Cannot be null'))
-    // expect(errorMessage).toBeInTheDocument()
     })
 
   })
