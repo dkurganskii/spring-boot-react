@@ -81,5 +81,4 @@ describe('Layout', () => {
         const { queryByText } = render(<Input error="Cannot be null" />);
         expect(queryByText('Cannot be null')).not.toBeInTheDocument();
       });
-
 })
