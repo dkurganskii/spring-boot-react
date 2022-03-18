@@ -1,4 +1,4 @@
-import { render, fireEvent, waitForElementToBeRemoved, waitFor } from "@testing-library/react"
+import { render, fireEvent, waitForElementToBeRemoved, waitFor, waitForElement } from "@testing-library/react"
 import UserSignupPage from './UserSignupPage'
 import { jssPreset } from "@material-ui/styles"
 
@@ -258,7 +258,7 @@ describe('UserSignupPage', () => {
       expect(mismatchWarning).toBeInTheDocument();
     });
 
-    xit('hides the validation error when user changes the content of displayName', async () => {
+    it('hides the validation error when user changes the content of displayName', async () => {
       const actions = {
         postSignup: jest.fn().mockRejectedValue({
           response: {
@@ -273,8 +273,52 @@ describe('UserSignupPage', () => {
       const { queryByText } = setupForSubmit({ actions });
       fireEvent.click(button);
 
-      await waitForElement(() => queryByText('Cannot be null'));
+      await waitFor(() => queryByText('Cannot be null'));
       fireEvent.change(displayNameInput, changeEvent('name updated'));
+
+      const errorMessage = queryByText('Cannot be null');
+      expect(errorMessage).not.toBeInTheDocument();
+    });
+
+    it('hides the validation error when user changes the content of username', async () => {
+      const actions = {
+        postSignup: jest.fn().mockRejectedValue({
+          response: {
+            data: {
+              validationErrors: {
+                username: 'Username cannot be null'
+              }
+            }
+          }
+        })
+      };
+      const { queryByText } = setupForSubmit({ actions });
+      fireEvent.click(button);
+
+      await waitFor(() => queryByText('Username cannot be null'));
+      fireEvent.change(usernameInput, changeEvent('name updated'));
+
+      const errorMessage = queryByText('Username cannot be null');
+      expect(errorMessage).not.toBeInTheDocument();
+    });
+
+    it('hides the validation error when user changes the content of password', async () => {
+      const actions = {
+        postSignup: jest.fn().mockRejectedValue({
+          response: {
+            data: {
+              validationErrors: {
+                password: 'Cannot be null'
+              }
+            }
+          }
+        })
+      };
+      const { queryByText } = setupForSubmit({ actions });
+      fireEvent.click(button);
+
+      await waitFor(() => queryByText('Cannot be null'));
+      fireEvent.change(passwordInput, changeEvent('updated-password'));
 
       const errorMessage = queryByText('Cannot be null');
       expect(errorMessage).not.toBeInTheDocument();

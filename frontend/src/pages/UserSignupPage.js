@@ -21,13 +21,16 @@ export class UserSignupPage extends React.Component {
 
     onChangeUsername = (event) => {
         const value = event.target.value
-        this.setState({ username: value })
+        const errors = { ...this.state.errors }
+        delete errors.userName
+        this.setState({ username: value, errors })
     }
 
     onChangePassword = (event) => {
         const value = event.target.value
         const passwordRepeatConfirmed = this.state.passwordRepeat === value
         const errors = { ...this.state.errors }
+        delete errors.password
         errors.passwordRepeat = passwordRepeatConfirmed ? '' : 'Does not match to password'
         this.setState({ password: value, passwordRepeatConfirmed, errors })
     }
