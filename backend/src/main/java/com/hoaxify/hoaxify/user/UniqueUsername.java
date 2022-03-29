@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UniqueUsername {
-    String message() default "{hoaxify.constraints.userName.UniqueUsername.message}";
+    String message() default "{hoaxify.constraints.username.UniqueUsername.message}";
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default { };
 

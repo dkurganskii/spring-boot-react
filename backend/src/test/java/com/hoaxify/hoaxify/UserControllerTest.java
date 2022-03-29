@@ -75,7 +75,7 @@ public class UserControllerTest {
     @Test
     public void postUser_whenUserHasNullUsername_receiveBadRequest() {
         User user = createValidUser();
-        user.setUserName(null);
+        user.setUsername(null);
         ResponseEntity<Object> response = postSignup(user, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
@@ -99,7 +99,7 @@ public class UserControllerTest {
     @Test
     public void postUser_whenUserHasUsernameWithLessThanRequired_receiveBadRequest() {
         User user = createValidUser();
-        user.setUserName("abc");
+        user.setUsername("abc");
         ResponseEntity<Object> response = postSignup(user, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
@@ -124,7 +124,7 @@ public class UserControllerTest {
     public void postUser_whenUserHasUsernameExceedsTheLengthLimit_receiveBadRequest() {
         User user = createValidUser();
         String value256chars = IntStream.rangeClosed(1, 256).mapToObj(x -> "a").collect(Collectors.joining());
-        user.setUserName(value256chars);
+        user.setUsername(value256chars);
         ResponseEntity<Object> response = postSignup(user, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
@@ -188,7 +188,7 @@ public class UserControllerTest {
     @Test
     public void postUser_whenUserHasNullUsername_receiveMessageOfNullErrorForUsername() {
         User user = createValidUser();
-        user.setUserName(null);
+        user.setUsername(null);
         ResponseEntity<ApiError> response = postSignup(user, ApiError.class);
         Map<String, String> validationErrors = response.getBody().getValidationErrors();
         assertThat(validationErrors.get("userName")).isEqualTo("Username cannot be null");
@@ -206,7 +206,7 @@ public class UserControllerTest {
     @Test
     public void postUser_whenUserHasInvalidLengthUsername_receiveGenericMessageOfSizeError() {
         User user = createValidUser();
-        user.setUserName("abc");
+        user.setUsername("abc");
         ResponseEntity<ApiError> response = postSignup(user, ApiError.class);
         Map<String, String> validationErrors = response.getBody().getValidationErrors();
         assertThat(validationErrors.get("userName")).isEqualTo("It must have minimum 4 and maximum 255 characters");
@@ -245,7 +245,7 @@ public class UserControllerTest {
 
     private User createValidUser() {
         User user = new User();
-        user.setUserName("test-user");
+        user.setUsername("test-user");
         user.setDisplayName("display-name");
         user.setPassword("P4ssword");
         return user;
