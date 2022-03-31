@@ -191,7 +191,7 @@ public class UserControllerTest {
         user.setUsername(null);
         ResponseEntity<ApiError> response = postSignup(user, ApiError.class);
         Map<String, String> validationErrors = response.getBody().getValidationErrors();
-        assertThat(validationErrors.get("userName")).isEqualTo("Username cannot be null");
+        assertThat(validationErrors.get("username")).isEqualTo("Username cannot be null");
     }
 
     @Test
@@ -209,7 +209,7 @@ public class UserControllerTest {
         user.setUsername("abc");
         ResponseEntity<ApiError> response = postSignup(user, ApiError.class);
         Map<String, String> validationErrors = response.getBody().getValidationErrors();
-        assertThat(validationErrors.get("userName")).isEqualTo("It must have minimum 4 and maximum 255 characters");
+        assertThat(validationErrors.get("username")).isEqualTo("It must have minimum 4 and maximum 255 characters");
     }
 
     @Test
@@ -236,7 +236,7 @@ public class UserControllerTest {
         User user = createValidUser();
         ResponseEntity<ApiError> response = postSignup(user, ApiError.class);
         Map<String, String> validationErrors = response.getBody().getValidationErrors();
-        assertThat(validationErrors.get("userName")).isEqualTo("This name is in use");
+        assertThat(validationErrors.get("username")).isEqualTo("This name is in use");
     }
 
     public <T> ResponseEntity<T> postSignup(Object request, Class<T> response) {
