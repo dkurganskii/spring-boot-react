@@ -1,6 +1,7 @@
 package com.hoaxify.hoaxify;
 
 import com.hoaxify.hoaxify.error.ApiError;
+import com.hoaxify.hoaxify.user.User;
 import com.hoaxify.hoaxify.user.UserRepository;
 import com.hoaxify.hoaxify.user.UserService;
 import org.junit.Before;
@@ -9,11 +10,15 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -78,6 +83,16 @@ public class LoginControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
+    @Test
+    public void postLogin_withValidCredentials_receiveLoggedInUserId() {
+        User inDB = userService.save(TestUtil.createValidUser());
+        authenticate();
+        ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<Map<String, Object>>() {});
+        Map<String, Object> body = response.getBody();
+        Integer id = (Integer) body.get("id");
+        assertThat(id).isEqualTo(inDB.getId());
+    }
+
     private void authenticate() {
         testRestTemplate.getRestTemplate()
                 .getInterceptors().add(new BasicAuthenticationInterceptor("test-user", "P4ssword"));
@@ -85,5 +100,9 @@ public class LoginControllerTest {
 
     public <T> ResponseEntity<T> login(Class<T> responseType) {
         return testRestTemplate.postForEntity(API_1_0_LOGIN, null, responseType);
+    }
+
+    public <T> ResponseEntity<T> login(ParameterizedTypeReference<T> responseType){
+        return testRestTemplate.exchange(API_1_0_LOGIN, HttpMethod.POST ,null, responseType);
     }
 }
