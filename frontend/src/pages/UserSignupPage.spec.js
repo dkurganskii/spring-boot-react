@@ -1,6 +1,5 @@
-import { render, fireEvent, waitForElementToBeRemoved, waitFor, waitForElement } from "@testing-library/react"
+import { render, fireEvent, waitForElementToBeRemoved, waitFor } from "@testing-library/react"
 import UserSignupPage from './UserSignupPage'
-import { jssPreset } from "@material-ui/styles"
 
 describe('UserSignupPage', () => {
   describe('Layout', () => {
