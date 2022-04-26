@@ -98,3 +98,4 @@ LoginPage.defaultProps = {
       postLogin: () => new Promise((resolve, reject) => resolve({}))
     }
   };
+  export default LoginPage;
