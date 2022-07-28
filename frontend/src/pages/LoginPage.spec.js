@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, waitForElement, waitFor, waitForDomChange } from '@testing-library/react';
+import { render, fireEvent, waitForElement, waitFor, waitForDomChange, waitForElementToBeRemoved } from '@testing-library/react';
 import { LoginPage } from './LoginPage';
 
 describe('LoginPage', () => {
@@ -198,18 +198,33 @@ describe('LoginPage', () => {
         expect(spinner).toBeInTheDocument();
       });
   
+      // it('hides spinner after api call finishes successfully', async () => {
+      //   const actions = {
+      //     postLogin: mockAsyncDelayed()
+      //   };
+      //   const { queryByText } = setupForSubmit({ actions });
+      //   fireEvent.click(button);
+  
+      //   await waitForDomChange();
+  
+      //   const spinner = queryByText('Loading...');
+      //   expect(spinner).not.toBeInTheDocument();
+      // });
+
       it('hides spinner after api call finishes successfully', async () => {
         const actions = {
           postLogin: mockAsyncDelayed()
         };
         const { queryByText } = setupForSubmit({ actions });
         fireEvent.click(button);
-  
-        await waitForDomChange();
-  
+        
+        // this can be used
+        await waitForElementToBeRemoved(() => queryByText('Loading...'))
+     
         const spinner = queryByText('Loading...');
         expect(spinner).not.toBeInTheDocument();
-      });
+    });
+      
       it('hides spinner after api call finishes with error', async () => {
         const actions = {
           postLogin: jest.fn().mockImplementation(() => {
@@ -225,7 +240,7 @@ describe('LoginPage', () => {
         const { queryByText } = setupForSubmit({ actions });
         fireEvent.click(button);
   
-        await waitForDomChange();
+        await waitForElementToBeRemoved(() => queryByText('Loading...'), {timeout: 400})
   
         const spinner = queryByText('Loading...');
         expect(spinner).not.toBeInTheDocument();
@@ -238,10 +253,13 @@ describe('LoginPage', () => {
         const history = {
           push: jest.fn()
         };
-        setupForSubmit({ actions, history });
+        const { queryByText } = setupForSubmit({ actions, history });
         fireEvent.click(button);
   
-        await waitForDomChange();
+         await waitForElementToBeRemoved(() => queryByText('Loading...'), {timeout: 1000})
+
+         const spinner = queryByText('Loading...');
+         expect(spinner).not.toBeInTheDocument();
   
         expect(history.push).toHaveBeenCalledWith('/');
       });
