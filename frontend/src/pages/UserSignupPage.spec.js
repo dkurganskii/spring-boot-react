@@ -323,6 +323,24 @@ describe('UserSignupPage', () => {
       expect(errorMessage).not.toBeInTheDocument();
     });
 
+    it('redirects to homePage after successful signup', async () => {
+      const actions = {
+        postSignup: jest.fn().mockResolvedValue({})
+      };
+      const history = {
+        push: jest.fn()
+      };
+      const { queryByText } = setupForSubmit({ actions, history });
+      fireEvent.click(button);
+
+      await waitForElementToBeRemoved(() => queryByText('Loading...'), {timeout: 1000})
+
+      const spinner = queryByText('Loading...');
+      expect(spinner).not.toBeInTheDocument();
+
+      expect(history.push).toHaveBeenCalledWith('/');
+    });
+
   })
 })
 
